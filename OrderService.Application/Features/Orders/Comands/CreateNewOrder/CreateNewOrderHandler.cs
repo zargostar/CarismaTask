@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Hangfire;
 using MediatR;
 using OrderService.Application.Contracts;
 using OrderService.Application.Exceptions;
 using OrderServise.Domain.Entities;
+using OrderServise.Domain.Entities.Mongo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +16,18 @@ namespace OrderService.Application.Features.Orders.Comands.CreateNewOrder
     public class CreateNewOrderHandler : IRequestHandler<OrderItemCommand>
     {
         private readonly IOrderRepository orderRepository;
+        private readonly IOrderMongoService mongoService;
         private readonly IMapper mapper;
 
-        public CreateNewOrderHandler(IOrderRepository orderRepository, IMapper mapper)
+        public CreateNewOrderHandler(IOrderRepository orderRepository, IMapper mapper, IOrderMongoService mongoService)
         {
             this.orderRepository = orderRepository;
             this.mapper = mapper;
+            this.mongoService = mongoService;
         }
 
 
-    
+
         public async Task Handle(OrderItemCommand request, CancellationToken cancellationToken)
         {
          
@@ -48,6 +52,10 @@ namespace OrderService.Application.Features.Orders.Comands.CreateNewOrder
                 await orderRepository.UpdateAsync(userOrder);
                 //throw new ClientErrorMessage("این کاربر یک  سفارش دارد");
             }
+           var mongoOrder= mapper.Map<OrderMongo>(request);
+            mongoOrder.UserId = userId;
+            BackgroundJob.Enqueue(() => mongoService.CreateOrder(mongoOrder));
+            //await mongoService.CreateOrder(mongoOrder);
             
         }
     }
