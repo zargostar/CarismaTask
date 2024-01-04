@@ -14,12 +14,14 @@ namespace OrderServise.Infrastructure.Persistance
        // private IConfiguration configuration;
         private readonly IMongoDatabase db;
         private readonly IMongoCollection<T>  mongoCollection;
+        //private readonly IConfiguration configuration;
 
-        public MongoRepository()
+        public MongoRepository(IConfiguration configuration)
         {
-            var client = new MongoClient();
+            var client = new MongoClient(configuration["mongoDb"]);
             db = client.GetDatabase("Order");
-            mongoCollection =db.GetCollection<T>(typeof(T).Name);
+            mongoCollection = db.GetCollection<T>(typeof(T).Name);
+          
         }
 
         public IMongoCollection<T> GetCollection()
