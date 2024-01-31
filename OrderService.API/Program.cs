@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OrderService.API;
 using OrderService.API.Filters;
 using OrderService.Application;
 using OrderServise.Infrastructure;
@@ -26,13 +27,15 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<OrderDbContext>();
     //await context.Database.MigrateAsync();
     await context.Database.MigrateAsync();
-   // await SeedData.Craete(context);
+   await SeedData.SeedDataLast(context);
+   ;
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+   // SeedData.SeedAppData(app);
 }
 
 app.UseAuthorization();

@@ -23,5 +23,11 @@ namespace OrderService.Application.Mapping
                   .ForMember(des => des.MovieTheater, src => src.MapFrom(x => x.TheaterIds.Select(x => new MovieTheater() { TheaterId = x }).ToList()))
                   .ForMember(des => des.ActorMovies, src => src.MapFrom(x => x.Actors.Select(x => new ActorMovie() { Role = x.Role, ActorId = x.Id }).ToList()));    
         }
+        //  enums
+        // CreateMap<NewOrder, NewOrderDto>().ForMember(x => x.OrderDSescription, src => src.MapFrom(x => ((OrderState) x.OrderState).AsString(EnumFormat.Description)));
+
+        // in dton directly map
+        //=>  // public string OrderStatename =>OrderState.GetDisplayName();
+        // public string Orderdescription => ((OrderState)OrderState).AsString(EnumFormat.Description);
     }
 }
