@@ -11,7 +11,7 @@ using OrderServise.Infrastructure.Persistance;
 
 namespace OrderServise.Infrastructure.Migrations
 {
-    [DbContext(typeof(OrderDbContext))]
+    [DbContext(typeof(DataBaseContext))]
     [Migration("20240101104923_mmmm")]
     partial class mmmm
     {

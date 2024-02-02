@@ -12,7 +12,7 @@ namespace OrderServise.Infrastructure.Repositories
 {
     public class OrderRepository : BaseRepositoryAsync<Order>, IOrderRepository
     {
-        public OrderRepository(OrderDbContext dbContext) : base(dbContext)
+        public OrderRepository(DataBaseContext dbContext) : base(dbContext)
         {
         }
 

@@ -13,9 +13,9 @@ namespace OrderServise.Infrastructure.Repositories
 {
     public class BaseRepositoryAsync<T>:IBaseRepositoryAsync<T> where T : BaseEntity
     {
-        protected readonly OrderDbContext _dbContext;
+        protected readonly DataBaseContext _dbContext;
 
-        public BaseRepositoryAsync(OrderDbContext dbContext)
+        public BaseRepositoryAsync(DataBaseContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }

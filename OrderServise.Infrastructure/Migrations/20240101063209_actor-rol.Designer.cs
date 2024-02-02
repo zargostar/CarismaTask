@@ -10,7 +10,7 @@ using OrderServise.Infrastructure.Persistance;
 
 namespace OrderServise.Infrastructure.Migrations
 {
-    [DbContext(typeof(OrderDbContext))]
+    [DbContext(typeof(DataBaseContext))]
     [Migration("20240101063209_actor-rol")]
     partial class actorrol
     {

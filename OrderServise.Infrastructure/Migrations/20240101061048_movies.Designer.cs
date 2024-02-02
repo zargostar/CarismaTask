@@ -10,7 +10,7 @@ using OrderServise.Infrastructure.Persistance;
 
 namespace OrderServise.Infrastructure.Migrations
 {
-    [DbContext(typeof(OrderDbContext))]
+    [DbContext(typeof(DataBaseContext))]
     [Migration("20240101061048_movies")]
     partial class movies
     {

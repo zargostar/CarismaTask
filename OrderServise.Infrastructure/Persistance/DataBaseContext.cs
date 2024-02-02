@@ -1,17 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using OrderServise.Domain.Entities;
 using OrderServise.Infrastructure.Persistance.EFConfigurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OrderServise.Infrastructure.Persistance
 {
-    public class OrderDbContext : DbContext
+    public class DataBaseContext : IdentityDbContext<AppUser>
     {
-        public OrderDbContext(DbContextOptions options) : base(options)
+        public DataBaseContext(DbContextOptions options) : base(options)
         {
         }
         public DbSet<Order> Orders { get; set; }
@@ -30,6 +33,8 @@ namespace OrderServise.Infrastructure.Persistance
             modelBuilder.Entity<ActorMovie>().HasKey(p => new { p.MovieId, p.ActorId });
             modelBuilder.Entity<GenreMovie>().HasKey(p=>new {p.MovieId,p.GenreId});
             modelBuilder.Entity<MovieTheater>().HasKey(p => new { p.MovieId, p.TheaterId });
+            base.OnModelCreating(modelBuilder);
         }
+       
     }
 }

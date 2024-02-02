@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderService.Application.Contracts;
+using OrderServise.Domain.Entities;
 using OrderServise.Infrastructure.Persistance;
 using OrderServise.Infrastructure.Repositories;
 using System;
@@ -16,7 +18,9 @@ namespace OrderServise.Infrastructure
     {
         public  static void  AddInfrastructurService(this IServiceCollection services,IConfiguration configuration)
         {
-            services.AddDbContext<OrderDbContext>(c => c.UseSqlServer(configuration["sqlConnection"]));
+            services.AddDbContext<DataBaseContext>(c => c.UseSqlServer(configuration["sqlConnection"]));
+           // 
+           
             services.AddScoped<IOrderRepository,OrderRepository>();
             services.AddScoped(typeof( BaseRepositoryAsync<>),typeof( BaseRepositoryAsync<>));
             services.AddScoped<IMovirRepository, MovieRepository>();

@@ -13,7 +13,7 @@ namespace OrderServise.Infrastructure.Repositories
 {
     public class MovieRepository : BaseRepositoryAsync<Movie>, IMovirRepository
     {
-        public MovieRepository(OrderDbContext dbContext) : base(dbContext)
+        public MovieRepository(DataBaseContext dbContext) : base(dbContext)
         {
         }
 

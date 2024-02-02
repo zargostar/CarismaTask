@@ -11,7 +11,7 @@ namespace OrderServise.Infrastructure.Repositories
 {
     public class GenreRepository : BaseRepositoryAsync<Genre>, IGenreRepository
     {
-        public GenreRepository(OrderDbContext dbContext) : base(dbContext)
+        public GenreRepository(DataBaseContext dbContext) : base(dbContext)
         {
         }
     }
