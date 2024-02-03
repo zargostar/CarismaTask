@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using OrderService.Application.Features.Orders.Comands.CreateNewOrder;
 using OrderServise.Domain.Entities;
+using OrderServise.Domain.Entities.Mongo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace OrderService.Application.Mapping
         {
             CreateMap<OrderLine, OrderItem>().ReverseMap();
             CreateMap<OrderItemCommand, Order>().ReverseMap();
+            CreateMap<OrderItemCommand, OrderMongo>().ForMember(des=>des.Id,src=>src.Ignore());
+            CreateMap<OrderLine, OrderItemMongo>();
         }
     }
 }

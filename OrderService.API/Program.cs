@@ -1,6 +1,8 @@
 using Identity.Bugeto.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -127,6 +129,21 @@ builder.Services.AddCors(option => {
 
 });
 builder.Services.AddEndpointsApiExplorer();
+ builder.Services.AddInfrastructurService(builder.Configuration);
+builder.Services.AddHangfire(configuration => configuration
+       //.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+       .UseSimpleAssemblyNameTypeSerializer()
+       .UseRecommendedSerializerSettings()
+       .UseSqlServerStorage(builder.Configuration["HangFireDb"], new SqlServerStorageOptions
+       {
+           CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+           SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+           QueuePollInterval = TimeSpan.Zero,
+           UseRecommendedIsolationLevel = true,
+           DisableGlobalLocks = true
+       }));
+builder.Services.AddHangfireServer();
+        
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -153,4 +170,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.UseCors();
+app.UseHangfireDashboard();
 app.Run();

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderService.Application.Contracts;
+using OrderServise.Infrastructure.MongoServises;
 using OrderServise.Domain.Entities;
 using OrderServise.Infrastructure.Persistance;
 using OrderServise.Infrastructure.Repositories;
@@ -25,6 +26,8 @@ namespace OrderServise.Infrastructure
             services.AddScoped(typeof( BaseRepositoryAsync<>),typeof( BaseRepositoryAsync<>));
             services.AddScoped<IMovirRepository, MovieRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddTransient(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+            services.AddTransient<IOrderMongoService, OrderMongoService>();
 
 
         }

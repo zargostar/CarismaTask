@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
+  </ItemGroup>
+
 </Project>
