@@ -1,3 +1,4 @@
+using Identity.Bugeto.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using OrderServise.Domain.Common;
 using OrderServise.Domain.Entities;
 using OrderServise.Infrastructure;
 using OrderServise.Infrastructure.Persistance;
+using Serilog;
 using System.Diagnostics;
 using System.Security.Claims;
 using System.Text;
@@ -18,11 +20,12 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 builder.Services.AddControllers(optiopn =>
 {
     optiopn.Filters.Add(typeof(GlobalExeptionFilter));
-});
+    optiopn.Filters.Add(typeof(BadRequestFilter));
+}).ConfigureApiBehaviorOptions(BadRequestBehavior.Parse);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerGen(options =>
 {
@@ -75,7 +78,23 @@ builder.Services.AddScoped<ICurrentUser>(provider =>
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructurService(builder.Configuration);
-builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<DataBaseContext>();
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<DataBaseContext>()
+    .AddErrorDescriber<CustomIdentityError>();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+   // options.User.AllowedUserNameCharacters = "0123";
+   options.User.RequireUniqueEmail = true;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric=false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequiredUniqueChars = 1;
+    options.Lockout.MaxFailedAccessAttempts = 3;
+    options.Lockout.DefaultLockoutTimeSpan=TimeSpan.FromMinutes(1);
+    options.SignIn.RequireConfirmedEmail = false;
+
+});
 builder.Services.AddAuthentication(u =>
 {
     u.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OrderService.API.Models;
+using OrderService.Application.Exceptions;
 using OrderService.Application.Models;
 using OrderServise.Domain.Common;
 using OrderServise.Domain.Entities;
@@ -17,6 +18,7 @@ namespace OrderService.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -31,10 +33,11 @@ namespace OrderService.API.Controllers
             _mapper = mapper;
             _config = config;
         }
-        [Authorize(Roles =UserRole.ADMIN)]
+       // [Authorize(Roles =UserRole.ADMIN)]
         //[Authorize(Policy ="IsAdmin")]
        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Post(CreateUserDto userDto)
         {
             var newUser=_mapper.Map<AppUser>(userDto);
@@ -47,9 +50,13 @@ namespace OrderService.API.Controllers
             return NoContent();
 
         }
+        [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto )
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto,ILogger<UserController> logger )
         {
+            logger.LogInformation("it is a log befor error");
+            // throw new NullReferenceException();
+            throw new ClientErrorMessage("selected row is not  valid");
             var user=await _userManager.FindByNameAsync(loginDto.UserName);
             if (user is null)
             {
@@ -64,12 +71,23 @@ namespace OrderService.API.Controllers
             return BadRequest("ورود ناموفق");
         }
        
-        [HttpPut]
-        public async Task<IActionResult> Test()
-        {
-            return Ok();
+        //[HttpPut]
+        //public async Task<IActionResult> UserRegister(CreateUserDto userDto)
+        //{
+          
+        //    return Ok();
 
+        //}
+        [Authorize]
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(CreateUserDto createuser)
+        {
+            var user =await _userManager.FindByNameAsync(createuser.UserName);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            await _userManager.ResetPasswordAsync(user, token, createuser.UserName);
+            return Ok();
         }
+       
         private async Task<LoginResponseDto> CreateTokenRole(AppUser user,IConfiguration _config)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
